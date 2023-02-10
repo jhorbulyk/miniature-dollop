@@ -1,0 +1,11 @@
+node_modules
+coverage
+dist
+.nyc_output
+.idea
+.vscode
+*.js
+!.eslintrc.js
+*.d.ts
+.env
+storageFile.json

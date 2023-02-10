@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Engine Manipulation UI</title>
+</head>
+  <body>
+  <table id="engineTable" class="display">
+    <thead>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Manufacture Date</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <button onclick="addRow()">Add Row</button>
+    <script>
+        function updateRow(buttonElement) {
+          const rowToUpdate = buttonElement.currentTarget.closest('tr');
+
+          const engine = {
+            id: rowToUpdate.cells[0].children[0].value,
+            name: rowToUpdate.cells[1].children[0].value,
+            manufactureDate: rowToUpdate.cells[2].children[0].value,
+          };
+          fetch('/data', {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(engine)
+          }).then(() => {
+            rowToUpdate.cells[0].children[0].disabled = true;
+          });
+        }
+
+        function addRow() {
+          const newRow = engineTable.insertRow();
+
+          const idCell = newRow.insertCell();
+          const idBox = document.createElement('input');
+          idCell.appendChild(idBox);
+
+          const nameCell = newRow.insertCell();
+          const nameBox = document.createElement('input');
+          nameBox.type = 'text';
+          nameCell.appendChild(nameBox);
+
+          const manufactureDateCell = newRow.insertCell();
+          const manufactureDateBox = document.createElement('input');
+          manufactureDateBox.type = 'text';
+          manufactureDateCell.appendChild(manufactureDateBox);
+
+          const saveCell = newRow.insertCell();
+          const saveButton = document.createElement('button');
+          saveButton.textContent = 'Update';
+          saveButton.onclick = updateRow;
+          saveCell.appendChild(saveButton);
+        }
+
+        fetch('/data')
+          .then((response) => response.json())
+          .then((data) => {
+            const engineTable = document.getElementById('engineTable');
+            for (let engine of data) {
+              const newRow = engineTable.insertRow();
+
+              const idCell = newRow.insertCell();
+              const idBox = document.createElement('input');
+              idBox.type = 'text';
+              idBox.disabled = true;
+              idBox.value = engine.id;
+              idCell.appendChild(idBox);
+
+              const nameCell = newRow.insertCell();
+              const nameBox = document.createElement('input');
+              nameBox.type = 'text';
+              nameBox.value = engine.name;
+              nameCell.appendChild(nameBox);
+
+              const manufactureDateCell = newRow.insertCell();
+              const manufactureDateBox = document.createElement('input');
+              manufactureDateBox.type = 'text';
+              manufactureDateBox.value = engine.manufactureDate;
+              manufactureDateCell.appendChild(manufactureDateBox);
+
+              const saveCell = newRow.insertCell();
+              const saveButton = document.createElement('button');
+              saveButton.textContent = 'Update';
+              saveButton.onclick = updateRow;
+              saveCell.appendChild(saveButton);
+            }
+          });
+    </script>
+  </body>
+</html>
